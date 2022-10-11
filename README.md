@@ -13,6 +13,7 @@ Directory (CWD) to the client with the latest changes, if any. Figure 1 shows a 
 the server and client.
 Figure 1: Flow chart of the server and client.
 2
+![img.png](img.png)
 Server: The server initializes its socket and internal variables and awaits upcoming connections
 from clients. When a client connects to the designated socket (pre-defined), the server handles
 the connection in a new thread and awaits connections from other clients. In the client thread,
@@ -55,6 +56,7 @@ indicated by a raised NotImplementedError. Along with the client, you are given 
 files. After implementing the missing functionalities, your code should be able to create the
 following directory tree at the server (next to server.py):
 3
+![img_1.png](img_1.png)
 For all messages between the server and client, use a buffer (packet) size of 1024 bytes. Start
 by implementing the helper methods in both the client and server. Then implement the main
 methods that contain the logics of the client and server, including multi-threading the server.
