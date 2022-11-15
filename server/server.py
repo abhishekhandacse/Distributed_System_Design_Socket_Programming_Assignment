@@ -60,6 +60,7 @@ def handle_cd(current_working_directory, new_working_directory):
     :param new_working_directory: name of the sub directory or '..' for parent
     :return: absolute path of new current working directory
     """
+    os.chdir(current_working_directory)
     os.chdir(new_working_directory)
     current_working_directory=os.getcwd()
     return os.getcwd()
@@ -124,11 +125,12 @@ def handle_dl(current_working_directory, file_name, service_socket, eof_token):
 
 class ClientThread(Thread):
 
-    def __init__(self, service_socket : socket.socket, address : str):
+    def __init__(self, service_socket : socket.socket, address : str, client_number:int, cwd):
         Thread.__init__(self)
         self.service_socket = service_socket
         self.address = address
-        self.cwd=None
+        self.client_number=client_number
+        self.cwd=cwd
     def run(self):
         print ("Connection from : ", self.address)
 
@@ -137,8 +139,7 @@ class ClientThread(Thread):
         EOF=generate_random_eof_token()
         self.service_socket.sendall(EOF)
         # establish working directory
-        self.cwd=os.getcwd()
-        print('the cwd is '+self.cwd)
+        print('the cwd is '+self.cwd +" the client number is"+str(self.client_number) )
         # send the current dir info
         self.service_socket.sendall(str.encode(self.cwd)+EOF)
         while True:
@@ -167,15 +168,18 @@ class ClientThread(Thread):
 
 def main():
     HOST = "127.0.0.1"
-    PORT = 65413
-
+    PORT = 65420
+    client_number=0
+    path=os.getcwd()
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind((HOST, PORT))
         s.listen()
         while True:
             conn, addr = s.accept()
-            client_thread = ClientThread(conn, addr)
+            client_thread=ClientThread(conn, addr,client_number,path)
             client_thread.start()
+            print("The Client Number is ",str(client_number) )
+            client_number=client_number+1
 
 if __name__ == '__main__':
     main()
